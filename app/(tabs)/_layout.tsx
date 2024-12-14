@@ -1,45 +1,116 @@
+/* eslint-disable react/no-unstable-nested-components */
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { useEffect, type ReactNode } from 'react';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { colors } from '@/theme';
+import { BasketIcon } from '@/assets/icons/BasketIcon';
+import { HomeIcon } from '@/assets/icons/HomeIcon';
+import { PersonIcon } from '@/assets/icons/PersonIcon';
+import { StarIcon } from '@/assets/icons/StarIcon';
+import { normalize } from '@/utils/layout-utils';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Box, Text } from '@/components';
+import { useFileStorage } from '@/hooks/useFileStorage';
+import { Platform, StyleSheet } from 'react-native';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function TabsLayout(): ReactNode {
+  const insets = useSafeAreaInsets();
+  const { itemCount, loadCart } = useFileStorage();
+
+  useEffect(() => {
+    loadCart();
+  }, [loadCart]);
 
   return (
     <Tabs
+      initialRouteName="(home)"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: colors.black,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarLabel: () => null,
+        tabBarItemStyle: {
+          paddingTop: normalize(10),
+        },
+        tabBarStyle: {
+          height: insets.bottom + normalize(60),
+        },
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <HomeIcon
+              color={color}
+              width={normalize(32.31)}
+              height={normalize(30)}
+            />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="cart"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Box>
+              {itemCount > 0 && (
+                <Box center color="red" style={styles.countBadge}>
+                  <Text
+                    weight={Platform.OS === 'android' ? 'bold' : 'medium'}
+                    variant="tiny"
+                    color="white"
+                  >
+                    {itemCount}
+                  </Text>
+                </Box>
+              )}
+              <BasketIcon
+                color={color}
+                width={normalize(34.15)}
+                height={normalize(30)}
+              />
+            </Box>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favorite"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <StarIcon
+              color={color}
+              width={normalize(32.31)}
+              height={normalize(30)}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <PersonIcon
+              color={color}
+              width={normalize(27.69)}
+              height={normalize(30)}
+            />
+          ),
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  countBadge: {
+    position: 'absolute',
+    width: normalize(22),
+    height: normalize(22),
+    borderRadius: normalize(11),
+    right: -normalize(10),
+    top: -normalize(3),
+    zIndex: 9,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+});

@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Box Component renders correctly with default props 1`] = `
+<View
+  style={
+    {
+      "alignItems": undefined,
+      "alignSelf": undefined,
+      "backgroundColor": "transparent",
+      "borderRadius": undefined,
+      "flex": undefined,
+      "gap": undefined,
+      "justifyContent": undefined,
+      "margin": undefined,
+      "marginHorizontal": undefined,
+      "marginVertical": undefined,
+      "padding": undefined,
+      "paddingHorizontal": undefined,
+      "paddingVertical": undefined,
+      "width": undefined,
+    }
+  }
+  testID="box"
+/>
+`;

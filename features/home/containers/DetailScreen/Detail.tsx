@@ -10,6 +10,7 @@ import { Platform, ScrollView } from 'react-native';
 import { Product } from '@/features/home/service/products';
 import { useFileStorage } from '@/hooks/useFileStorage';
 import { useFavoritesStorage } from '@/hooks/useFavorites';
+import { t } from '@/lang';
 
 export const Detail: React.FC = () => {
   const product = useLocalSearchParams<Product>();
@@ -22,7 +23,7 @@ export const Detail: React.FC = () => {
 
   const handleAddToCart = useCallback(() => {
     addItemToCart(product);
-    alert('Added to cart successfully!');
+    alert(t('addedSuccess'));
   }, [addItemToCart, product]);
 
   const handleToggleFavorite = useCallback(() => {

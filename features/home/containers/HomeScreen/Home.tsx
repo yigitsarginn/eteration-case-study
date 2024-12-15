@@ -108,17 +108,21 @@ export const Home = () => {
       filters.brands,
       filters.models,
     );
-    return sortProducts(filtered, filters.sortBy);
+    const sorted = sortProducts(filtered, filters.sortBy);
+
+    return Array.from(new Set(sorted.map((product) => product.id))).map((id) =>
+      sorted.find((product) => product.id === id),
+    );
   }, [products, searchQuery, filters]);
 
-  const mappedProducts = useMemo(
-    () =>
-      filteredProducts.map((product) => ({
+  const mappedProducts = useMemo(() => {
+    return filteredProducts
+      .filter((product): product is Product => !!product)
+      .map((product) => ({
         ...product,
         isFavorite: !!favorites[product.id],
-      })),
-    [filteredProducts, favorites],
-  );
+      }));
+  }, [filteredProducts, favorites]);
 
   if (isLoading && page === 1) {
     return (

@@ -7,7 +7,7 @@ export const sortProducts = (
 ): Product[] => {
   if (!sortBy) return products;
 
-  return [...products].sort((a, b) => {
+  const sorted = [...products].sort((a, b) => {
     switch (sortBy) {
       case SortOptions.OldToNew:
         return (
@@ -25,4 +25,8 @@ export const sortProducts = (
         return 0;
     }
   });
+
+  return Array.from(new Set(sorted.map((p) => p?.id)))
+    .map((id) => sorted.find((p) => p?.id === id))
+    .filter((product): product is Product => !!product);
 };

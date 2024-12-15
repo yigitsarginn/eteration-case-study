@@ -55,11 +55,11 @@ export const FilterModal: React.FC<FilterModalProps> = ({
     selected: string[],
     setSelected: React.Dispatch<React.SetStateAction<string[]>>,
   ) => {
-    if (selected.includes(value)) {
-      setSelected(selected.filter((item) => item !== value));
-    } else {
-      setSelected([...selected, value]);
-    }
+    const updatedSelected = selected.includes(value)
+      ? selected.filter((item) => item !== value)
+      : [...selected, value];
+
+    setSelected(Array.from(new Set(updatedSelected)));
   };
 
   const applyFilters = () => {
